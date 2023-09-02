@@ -12,12 +12,29 @@ const getAllSpices = async (req, res) => {
   }
   
   const createSpices = async (req, res) => {
-    const { title, author } = req.body
+    const { 
+      namaHerb,
+      deskripsi,
+      manfaat,
+      dosis,
+      saranOlahan
+
+    } = req.body
     
-    console.log(title, author, `<=================== spices ==================`);
+    console.log(      
+      namaHerb,
+      deskripsi,
+      manfaat,
+      dosis,
+      saranOlahan);
     
     try {
-      const newSpice = await req.db.collection('spices').insertOne({ title, author })
+      const newSpice = await req.db.collection('spices').insertOne({       
+        namaHerb,
+        deskripsi,
+        manfaat,
+        dosis,
+        saranOlahan })
       
       res.status(200).json({
         message: 'Spices successfully created',

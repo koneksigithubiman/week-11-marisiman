@@ -1,0 +1,152 @@
+openapi: 3.0.0
+info:
+  title: Assignment week 11
+  description: menggunakan RBAC dengan token based auth
+  version: 0.1.9
+servers:
+  - url: http://localhost:8000
+    description: Development local server
+  - url: http://staging-api.example.com
+    description: External staging server for testing
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Bearer with JWT token'
+
+  schemas:
+    RegisterUser:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          default: "user1"
+        role:
+          type: string
+          enum: [admin, user, approver]
+          default: user
+        password:
+          type: string
+          pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$
+          default: "user123"
+
+    LoginUser:
+      type: object
+      properties:
+        username:
+          type: string
+          default: "user1" 
+        password:
+          type: string
+          default: "user123"
+
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+
+    
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUser'
+              required:
+                - username
+                - role
+                - password
+      responses:
+        "200":
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      role:
+                        type: string
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+
+  /auth/login:
+    post:
+      summary: Log in with username and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+              
+      responses:
+        "200":
+          description: User successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: string
+
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+
+  /spices:
+    get:
+      security:
+        - bearer: []
+      
+      summary: All list of spices/ herbs.
+      description: Optional extended description in CommonMark or HTML.
+      responses:
+        '200':    # status code
+          description: A JSON array of all list spices
+          content:
+            application/json:
+              schema: 
+                type: array
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      author:
+                        type: string
+
+
+                
