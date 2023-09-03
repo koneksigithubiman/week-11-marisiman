@@ -6,8 +6,8 @@ info:
 servers:
   - url: http://localhost:8000
     description: Development local server
-  - url: http://staging-api.example.com
-    description: External staging server for testing
+  - url: https://splendid-sandals-dove.cyclic.app/api-docs/
+    description: External staging server for testing by cyclic
 components:
   securitySchemes:
     bearer:
