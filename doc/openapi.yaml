@@ -4,7 +4,7 @@ info:
   description: menggunakan RBAC dengan token based auth
   version: 0.1.9
 servers:
-  - url: http://localhost:8000
+  - url: http://localhost:3000
     description: Development local server
   - url: https://splendid-sandals-dove.cyclic.app/api-docs/
     description: External staging server for testing by cyclic
@@ -138,7 +138,7 @@ paths:
     post:
       tags:
         - "User/Admin"
-      summary: Register a new user
+      summary: Register in here
       requestBody:
         required: true
         content:
@@ -323,7 +323,7 @@ paths:
         - bearerAuth: []
       tags:
         - "Admin Request"
-      summary: Soft delete a user request
+      summary: Soft delete a spice request
       parameters:
         - name: id
           in: path
@@ -332,7 +332,7 @@ paths:
             type: string
       responses:
         "200":
-          description: "User soft deleted successfully"
+          description: "Spice soft deleted successfully"
           content:
             application/json:
               schema:
@@ -403,7 +403,7 @@ paths:
         - bearer: []
       tags:
         - 'User/ Admin Request'
-      summary: 'Create a new spices request'
+      summary: 'Create a new data user request'
       requestBody:
         content:
           application/json:
@@ -427,7 +427,7 @@ paths:
         - bearerAuth: []
       tags:
         - 'User/ Admin Request'
-      summary: Update user of a request
+      summary: Update data user of a request
       parameters:
         - name: id
           in: path
