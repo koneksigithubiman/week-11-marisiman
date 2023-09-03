@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { JWT_SIGN } = require('../config/jwt.js')
 
-const authorizationMiddleware = (req, res, next) => {
+const userAuthorization = (req, res, next) => {
   const authHeader = req.headers.authorization
   
   if (!authHeader) {
@@ -11,10 +11,10 @@ const authorizationMiddleware = (req, res, next) => {
     
     try {
       const decodedToken = jwt.verify(token, JWT_SIGN)
-      if (decodedToken.role === 'admin') {
+      if (decodedToken.role === 'admin','user') {
         next()
       } else {
-        res.status(401).json({ error: 'admin only' })
+        res.status(401).json({ error: 'admin and user only can edited' })
       }
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -22,4 +22,4 @@ const authorizationMiddleware = (req, res, next) => {
   }
 }
 
-module.exports = authorizationMiddleware
+module.exports = userAuthorization

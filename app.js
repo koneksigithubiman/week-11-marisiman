@@ -10,6 +10,7 @@ const authMiddleware = require('./middleware/authentication-middleware.js')
 const swaggerUi = require('swagger-ui-express')
 const fs = require('fs')
 const yaml = require('yaml')
+const userRouter = require('./routes/user-route.js')
 
 const openApiPath = './doc/openapi.yaml'
 const file = fs.readFileSync(openApiPath, 'utf8')
@@ -34,7 +35,7 @@ app.get('/', (req, res) => {
 
 app.use('/auth', authRouter)
 app.use('/spices',authMiddleware, spiceRouter)
-app.use('/users', () => {})
+app.use('/users', authMiddleware, userRouter)
 
 
 app.listen(port, () => {

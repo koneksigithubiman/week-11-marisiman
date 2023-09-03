@@ -26,7 +26,7 @@ components:
           default: "user1"
         role:
           type: string
-          enum: [admin, user, approver]
+          enum: [admin, user]
           default: user
         password:
           type: string
@@ -43,6 +43,88 @@ components:
           type: string
           default: "user123"
 
+    GetAllSpices:
+      type: array
+      properties:
+        message:
+          type: string
+        data:
+          type: array
+          properties:
+            id:
+              type: integer
+            namaHerb:
+              type: string
+            deskripsi:
+              type: string
+            manfaat:
+              type: string
+            dosis:
+              type: string
+              enum: [remaja, dewasa]
+              default: dewasa
+            saranOlahan:
+              type: string
+
+    CreateSpices:
+          type: object
+          properties:
+            namaHerb:
+              type: string
+            deskripsi:
+              type: string
+            manfaat:
+              type: string
+            dosis:
+              type: string
+              enum: [remaja, dewasa]
+              default: dewasa
+            saranOlahan:
+              type: string
+
+    GetAllUsers:
+      type: array
+      properties:
+        message:
+          type: string
+        data:
+          type: array
+          properties:
+            id:
+              type: integer
+            namaUser:
+              type: string
+            Usia:
+              type: number
+              default: 27
+            tinggiBdn:
+              type: string
+              default: cm
+            beratBdn:
+              type: string
+              default: kg
+            riwayatPenyakit:
+              type: string
+              default: magh
+
+    CreateUsers:
+          type: object
+          properties:
+            namaUser:
+              type: string
+            Usia:
+              type: number
+              default: 27
+            tinggiBdn:
+              type: string
+              default: cm
+            beratBdn:
+              type: string
+              default: kg
+            riwayatPenyakit:
+              type: string
+              default: magh
+
     BadRequest:
       type: object
       properties:
@@ -54,6 +136,8 @@ components:
 paths:
   /auth/register:
     post:
+      tags:
+        - "User/Admin"
       summary: Register a new user
       requestBody:
         required: true
@@ -93,6 +177,8 @@ paths:
 
   /auth/login:
     post:
+      tags:
+        - "User/Admin"
       summary: Log in with username and password
       requestBody:
         required: true
@@ -123,6 +209,8 @@ paths:
 
   /spices:
     get:
+      tags:
+        - "User/ Admin Request"
       security:
         - bearer: []
       
@@ -134,19 +222,321 @@ paths:
           content:
             application/json:
               schema: 
-                type: array
+                $ref: '#/components/schemas/GetAllSpices'
+
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+                
+    post:
+      security:
+        - bearer: []
+      tags:
+        - 'Admin Request'
+      summary: 'Create a new spices request'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSpices'
+      responses:
+        '201':
+          description: 'Transfer request created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSpices'
+        '400':
+          description: 'Invalid request'
+        '401':
+          description: 'Unauthorized'
+                
+  /spice/{id}:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - 'Admin Request'
+      summary: Update spice of a admin request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [rejected, approved]
+      responses:
+        "200":
+          description: "Spice status updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
                 properties:
                   message:
                     type: string
-                  data:
-                    type: array
-                    properties:
-                      id:
-                        type: integer
-                      title:
-                        type: string
-                      author:
-                        type: string
+
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+        "404":
+          description: "Spice not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - "Admin Request"
+      summary: Soft delete a user request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "User soft deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+
+        "404":
+          description: "Spice not found or already deleted"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
 
 
+  /users:
+    get:
+      tags:
+        - "User/ Admin Request"
+      security:
+        - bearer: []
+      summary: All list of users.
+      description: Optional extended description in CommonMark or HTML.
+      responses:
+        '200':    # status code
+          description: A JSON array of all list spices
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/GetAllUsers'
+
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
                 
+    post:
+      security:
+        - bearer: []
+      tags:
+        - 'User/ Admin Request'
+      summary: 'Create a new spices request'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUsers'
+      responses:
+        '201':
+          description: 'Transfer request created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUsers'
+        '400':
+          description: 'Invalid request'
+        '401':
+          description: 'Unauthorized'
+                
+  /users/{id}:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - 'User/ Admin Request'
+      summary: Update user of a request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [rejected, approved]
+      responses:
+        "200":
+          description: "User status updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+        "404":
+          description: "User not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - "User/ Admin Request"
+      summary: Soft delete a user request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "User soft deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+
+        "404":
+          description: "User not found or already deleted"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string

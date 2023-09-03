@@ -1,92 +1,95 @@
 const { ObjectId } = require("mongodb")
 
-const getAllSpices = async (req, res) => {
+const getAllUser = async (req, res) => {
     try {
-      const spices = await req.db.collection('spices').find().toArray()
+      const user = await req.db.collection('user').find().toArray()
       
       res.status(200).json({
-        message: 'Spices successfully retrieved',
-        data: spices
+        message: 'User successfully retrieved',
+        data: user
       })
     } catch (error) {
       res.status(500).json({ error: error.message })
     }
   }
   
-  const createSpices = async (req, res) => {
+  const createUser = async (req, res) => {
     const { 
-      namaHerb,
-      deskripsi,
-      manfaat,
-      dosis,
-      saranOlahan
+        namaUser,
+        usia,
+        jenisKelamin,
+        tinggiBdn,
+        beratBdn,
+        riwayatPenyakit
 
     } = req.body
     
     console.log(      
-      namaHerb,
-      deskripsi,
-      manfaat,
-      dosis,
-      saranOlahan);
+        namaUser,
+        usia,
+        jenisKelamin,
+        tinggiBdn,
+        beratBdn,
+        riwayatPenyakit);
     
     try {
-      const newSpice = await req.db.collection('spices').insertOne({       
-        namaHerb,
-        deskripsi,
-        manfaat,
-        dosis,
-        saranOlahan })
+      const newUser = await req.db.collection('user').insertOne({       
+        namaUser,
+        usia,
+        jenisKelamin,
+        tinggiBdn,
+        beratBdn,
+        riwayatPenyakit })
       
       res.status(200).json({
-        message: 'Spices successfully created',
-        data: newSpice
+        message: 'User successfully created',
+        data: newUser
       })
     } catch (error) {
       res.status(500).json({ error: error.message })
     }
   }
 
-  const updateSpices = async (req, res) => {
+  const updateUser = async (req, res) => {
     try {
       // Dapatkan ID pengguna yang akan diperbarui dari parameter permintaan
-      const spiceId = req.params.spicesId;
+      const userId = req.params.userId;
   
       // Dapatkan data pengguna yang diperbarui dari badan permintaan
-      const updatedSpiceData = req.body;
+      const updatedUserData = req.body;
   
       // Validasi bahwa updatedUserData tidak kosong dan berisi setidaknya satu bidang yang akan diperbarui
-      if (!updatedSpiceData || Object.keys(updatedSpiceData).length === 0) {
-        return res.status(400).json({ error: "Spice data not available " });
+      if (!updatedUserData || Object.keys(updatedUserData).length === 0) {
+        return res.status(400).json({ error: "Tidak ada data pengguna yang diberikan untuk diperbarui." });
       }
   
       // Perbarui dokumen pengguna dalam koleksi 'user' berdasarkan ID pengguna
-      const result = await req.db.collection("spices").updateOne(
-        { _id: new ObjectId(spiceId) },
-        { $set: updatedSpiceData } // Gunakan $set untuk memperbarui bidang-bidang tertentu
+      const result = await req.db.collection("user").updateOne(
+        { _id: new ObjectId(userId) },
+        { $set: updatedUserData } // Gunakan $set untuk memperbarui bidang-bidang tertentu
       );
   
       if (result.modifiedCount === 0) {
         // Jika tidak ada dokumen yang diubah, pengguna dengan ID yang diberikan tidak ditemukan
-        return res.status(404).json({ error: "Rempah-rempah tidak ditemukan." });
+        return res.status(404).json({ error: "Pengguna tidak ditemukan." });
       }
   
       // Kirim respons sukses
-      res.status(200).json({ message: "Rempah-rempah berhasil diperbarui" });
+      res.status(200).json({ message: "Pengguna berhasil diperbarui" });
     } catch (error) {
       // Tangani semua kesalahan yang terjadi selama proses pembaruan
-      console.error("Kesalahan saat memperbarui rempah-rempah:", error);
+      console.error("Kesalahan saat memperbarui pengguna:", error);
       res.status(500).json({ error: error.message });
     }
   };
   
-  const deleteSpices = async (req, res) => {
+  const deleteUser = async (req, res) => {
     try {
       // Ekstrak ID pengguna yang akan dihapus dari parameter permintaan (req.params)
-      const spiceId = req.params.spicesId;
+      const userId = req.params.userId;
   
       // Hapus pengguna berdasarkan ID dari database (gunakan req.db)
-      const result = await req.db.collection('spices').deleteOne({ _id: new ObjectId(spiceId) });
+      const result = await req.db.collection('user').deleteOne({ _id: new ObjectId(userId) });
   
       if (result.deletedCount === 0) {
         // Jika tidak ada dokumen yang dihapus, pengguna dengan ID yang diberikan tidak ditemukan
@@ -94,7 +97,7 @@ const getAllSpices = async (req, res) => {
       }
   
       // Kirim respons sukses jika pengguna berhasil dihapus
-      res.status(204).send('data spice success deleted');
+      res.status(204).send('data user success deleted');
     } catch (error) {
       // Tangani kesalahan jika terjadi selama proses penghapusan pengguna
       console.error('Error deleting user:', error);
@@ -103,8 +106,8 @@ const getAllSpices = async (req, res) => {
   };
   
   module.exports = {
-    getAllSpices,
-    createSpices,
-    updateSpices,
-    deleteSpices
+    getAllUser,
+    createUser,
+    updateUser,
+    deleteUser
   }
