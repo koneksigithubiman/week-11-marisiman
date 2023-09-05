@@ -7,7 +7,7 @@ const DB_URI = process.env.ENV === 'production' ? MONGO_PROD : MONGO_URI
 const connectToDb = async () => {
   try {
     const mongoClient = await new MongoClient(DB_URI).connect();
-    db = mongoClient.db('assignment-11')
+    db = mongoClient.db('assignment11')
 
     console.log(`You have been CONNECTED.. letss goo..!! `);
     return db
