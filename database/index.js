@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 
-const MONGO_PROD = `mongodb://mongo:MkIak5NxzVroNzP5bk0p@containers-us-west-203.railway.app:6164`
+const MONGO_PROD = `mongodb+srv://marisiman99:<marisiman99>@assignment11.gmy6fu4.mongodb.net/`
 const MONGO_URI= `mongodb://127.0.0.1:27017`
 
 const DB_URI = process.env.ENV === 'production' ? MONGO_PROD : MONGO_URI 
