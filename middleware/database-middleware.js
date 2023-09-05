@@ -1,19 +1,19 @@
-
-
+const connectToDb = require("../database")
 const { MongoClient } = require('mongodb')
 
 const databaseMiddleware = async (req, res, next) => {
-  try{
-  const mongoClient = await new MongoClient("mongodb://mongo:GgwGIZiQ581LE8hqygnS@containers-us-west-110.railway.app:7534").connect()
-  db = mongoClient.db('assignment-11')
+  try {
+    const db = await connectToDb()
   
-  req.db = db
+    req.db = db
   
-  next()
+    next();
 }
-  catch (error) {
+
+catch (error) {
   console.log(error, `<=================== error ==================`);
 }
+
 }
 
 module.exports = databaseMiddleware
